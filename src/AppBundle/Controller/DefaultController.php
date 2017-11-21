@@ -47,8 +47,12 @@ class DefaultController extends Controller
 	public function pruebasAction(Request $request)
 	{
 		$helpers = $this->get("app.helpers");
-		$em = $this->getDoctrine()->getManager();
-		$users = $em->getRepository('BackendBundle:User')->findAll();
-		return $helpers->json($users);
+		$hash = $request->get('authorization', null);
+		$check = $helpers->authCheck($hash,true);
+		var_dump($check);
+		die();
+//		$em = $this->getDoctrine()->getManager();
+//		$users = $em->getRepository('BackendBundle:User')->findAll();
+//		return $helpers->json($users);
 	}
 }

@@ -8,10 +8,11 @@ services:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
 
+    app.jwt_auth:
+        class: AppBundle\Services\JwtAuth
+        arguments: ["@doctrine.orm.entity_manager"]
+
     app.helpers:
         class: AppBundle\Services\Helpers
-        arguments: ["null"]
+        arguments: ["@app.jwt_auth"]
 
-    app.jwt_auth:
-            class: AppBundle\Services\JwtAuth
-            arguments: ["@doctrine.orm.entity_manager"]
