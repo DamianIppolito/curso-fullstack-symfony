@@ -33,8 +33,11 @@ class DefaultController extends Controller
 			$emailConstraint->message = "Email format not valid!!";
 			$validate_email = $this->get('validator')->validate($email, $emailConstraint);
 
+			//Cifrar las password
+			$pwd = hash('sha256', $password);
+
 			if (count($validate_email) == 0 && !is_null($password)){
-				$signup = $jwt_auth->signup($email,$password,$getHash);
+				$signup = $jwt_auth->signup($email,$pwd,$getHash);
 				return new JsonResponse($signup);
 			}else{
 				return $helpers->json(array("status" => "error","data" => "Login not valid!!"));

@@ -36,7 +36,9 @@ class UserController extends Controller{
 				$user->setEmail($email);
 				$user->setName($name);
 				$user->setSurname($surname);
-				$user->setPassword($password);
+				//Cifrar las password
+		        $pwd = hash('sha256', $password);
+				$user->setPassword($pwd);
 
 		        $em = $this->getDoctrine()->getManager();
 				$isset_user = $em->getRepository('BackendBundle:User')->findBy(array("email" => $email));
