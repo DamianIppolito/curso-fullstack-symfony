@@ -19,6 +19,8 @@ class DefaultController extends Controller
 
     public function loginAction(Request $request){
 	    $helpers = $this->get("app.helpers");
+	    $jwt_auth = $this->get("app.jwt_auth");
+
 	    $json = $request->get("json", null);
 		if(!is_null($json)){
 			$params = json_decode($json);
@@ -30,9 +32,11 @@ class DefaultController extends Controller
 			$validate_email = $this->get('validator')->validate($email, $emailConstraint);
 
 			if (count($validate_email) == 0 && !is_null($password)){
-				echo "Data Success";
+				$signup = $jwt_auth->signup($email,$password);
+				return $helpers->json($signup);
 			}else{
 				echo "Data incorret";
+				die();
 			}
 		}else{
 			echo "Send JSON with POST";
