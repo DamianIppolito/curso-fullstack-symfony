@@ -13,7 +13,7 @@ class UserController extends Controller{
         $helpers = $this->get('app.helpers');
         $json = $request->get('json',null);
         $params = json_decode($json);
-		$data = array();
+	    $data = array("status" => "error", "code" => 400, "msg" => "User not created");
 
         if(!is_null($json)){
 			$createdAt = new \DateTime("now");
@@ -48,8 +48,6 @@ class UserController extends Controller{
 					$data = array("status" => "error", "code" => 400, "msg" => "User not created, duplicated");
 				}
 	        }
-        }else{
-        	$data = array("status" => "error", "code" => 400, "msg" => "User not created");
         }
         return $helpers->json($data);
     }
