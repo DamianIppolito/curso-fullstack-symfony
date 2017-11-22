@@ -59,7 +59,6 @@ class UserController extends Controller{
 		$hash = $request->get('authorization',null);
 		$auth_check = $helpers->authCheck($hash);
 		if($auth_check){
-
 			$identity = $helpers->authCheck($hash, true);
 			$em = $this->getDoctrine()->getManager();
 			$user = $em->getRepository('BackendBundle:User')->findOneBy(array( "id" => $identity->sub));
@@ -105,6 +104,37 @@ class UserController extends Controller{
 						$data = array( "status" => "error", "code" => 400, "msg" => "User not updated" );
 					}
 				}
+			}
+		}else{
+			$data = array("status" => "error", "code" => 400, "msg" => "Authorization not valid!!!");
+		}
+		return $helpers->json($data);
+	}
+
+	public function uploadImageAction(Request $request){
+		$helpers = $this->get('app.helpers');
+		$hash = $request->get('authorization',null);
+		$auth_check = $helpers->authCheck($hash);
+		if($auth_check){
+			$identity = $helpers->authCheck($hash, true);
+			$em = $this->getDoctrine()->getManager();
+			$user = $em->getRepository('BackendBundle:User')->findOneBy(array( "id" => $identity->sub));
+
+			$file = $request->files->get('image');
+			if(!empty($file) && !is_null($file)){
+				$ext = $file->guessExtension();
+				if($ext == 'jpeg' || $ext == 'jpg' || $ext == 'png' || $ext == 'gif'){
+					$file_name = time().'.'.$ext;
+					$file->move('uploads/users', $file_name);
+					$user->setImage($file_name);
+					$em->persist($user);
+					$em->flush();
+					$data  = array( "status" => "success", "code" => 200, "msg" => "User Image uploaded!!!" );
+				}else{
+					$data = array("status" => "error", "code" => 400, "msg" => "File not valid");
+				}
+			}else{
+				$data = array("status" => "error", "code" => 400, "msg" => "User Image not loaded!!!");
 			}
 		}else{
 			$data = array("status" => "error", "code" => 400, "msg" => "Authorization not valid!!!");
