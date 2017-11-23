@@ -182,4 +182,16 @@ class VideoController extends Controller{
 
 		return $helpers->json($data);
 	}
+
+	public function videoAction(Request $request, Video $video = null){
+		$helpers = $this->get('app.helpers');
+
+		if(!is_null($video)){
+			$data  = array( "status" => "success", "code" => 200, "data" => $video);
+		}else{
+			$data = array("status" => "error", "code" => 400, "msg" => "Video Does not exist");
+		}
+
+		return $helpers->json($data);
+	}
 }
