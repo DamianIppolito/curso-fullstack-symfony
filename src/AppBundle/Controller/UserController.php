@@ -141,4 +141,31 @@ class UserController extends Controller{
 		}
 		return $helpers->json($data);
 	}
+
+	public function channelAction(Request $request, $id = null){
+		$helpers = $this->get('app.helpers');
+		$em = $this->getDoctrine()->getManager();
+		$user = $em->getRepository("BackendBundle:User")->findOneBy(array("id" => $id));
+		if(count($user) == 1){
+			$dql = "SELECT v FROM BackendBundle:Video v WHERE v.id = $id ORDER BY v.id DESC";
+			$query = $em->createQuery($dql);
+			$page = $request->query->getInt("page", 1);
+			$paginator = $this->get('knp_paginator');
+			$items_per_page = 6;
+			$pagination = $paginator->paginate($query, $page, $items_per_page);
+			$total_items_count = $pagination->getTotalItemCount();
+			$data  = array(
+				"status" => "success",
+				"total_items_count" => $total_items_count,
+				"page_actual" => $page,
+				"items_per_page" =>  $items_per_page,
+				"total_pages" => ceil($total_items_count / $items_per_page),
+				"data" => $pagination
+			);
+		}else{
+			$data = array("status" => "error", "code" => 400, "msg" => "User do not exist!!!");
+		}
+
+		return $helpers->json($data);
+	}
 }
