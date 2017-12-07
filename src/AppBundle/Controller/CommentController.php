@@ -43,4 +43,30 @@ class CommentController extends Controller {
 		}
 		return $helpers->json($data);
 	}
+
+	public function deleteAction(Request $request, $id = null){
+		$helpers = $this->get('app.helpers');
+		$hash = $request->get('authorization',null);
+		$authCheck = $helpers->authCheck($hash);
+		if($authCheck){
+			$identity = $helpers->authCheck($hash,true);
+			$user_id = (isset($identity->sub)) ? $identity->sub : null;
+			$em = $this->getDoctrine()->getManager();
+			$comment = $em->getRepository('BackendBundle:Comment')->findOneBy(array("id"=>$id));
+			if(is_object($comment) && !is_null($user_id)){
+				if($user_id == $comment->getUser()->getId() || $user_id == $comment->getVideo()->getUser()->getId()){
+					$em->remove($comment);
+					$em->flush();
+					$data  = array( "status" => "success", "code" => 200, "msg" => "Comment deleted!!!" );
+				}else{
+					$data = array("status" => "error", "code" => 400, "msg" => "Comment not deleted!!!");
+				}
+			}else{
+				$data = array("status" => "error", "code" => 400, "msg" => "Comment not deleted!!!");
+			}
+		}else{
+			$data = array("status" => "error", "code" => 400, "msg" => "Authorization not valid!!!");
+		}
+		return $helpers->json($data);
+	}
 }
