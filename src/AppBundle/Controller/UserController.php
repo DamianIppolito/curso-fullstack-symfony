@@ -88,7 +88,7 @@ class UserController extends Controller{
 					$user->setName( $name );
 					$user->setSurname( $surname );
 
-					if(!is_null($password)){
+					if(!is_null($password) && !empty($password)){
 						//Cifrar las password
 						$pwd = hash( 'sha256', $password );
 						$user->setPassword( $pwd );
