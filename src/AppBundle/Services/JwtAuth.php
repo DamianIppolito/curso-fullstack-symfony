@@ -41,13 +41,13 @@ class JwtAuth {
 			$jwt = JWT::encode($token, $key, "HS256");
 			$decoded = JWT::decode($jwt, $key, array('HS256'));
 
-			if(!is_null($getHash) && $getHash != 'false'){
-				return $decoded;
-			}else{
+			if(!is_null($getHash) && $getHash == 'true'){
 				return $jwt;
+			}else{
+				return $decoded;
 			}
 		}else{
-			return array("status" => "error", "data", "Login failed!!");
+			return array("status" => "error", "data" => "Login failed!!");
 		}
 	}
 
