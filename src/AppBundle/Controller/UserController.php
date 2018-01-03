@@ -159,7 +159,8 @@ class UserController extends Controller{
 				"page_actual" => $page,
 				"items_per_page" =>  $items_per_page,
 				"total_pages" => ceil($total_items_count / $items_per_page),
-				"data" => $pagination
+				"data" => $pagination,
+				"user" => $user
 			);
 		}else{
 			$data = array("status" => "error", "code" => 400, "msg" => "User do not exist!!!");
