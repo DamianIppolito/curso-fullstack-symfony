@@ -146,7 +146,7 @@ class UserController extends Controller{
 		$em = $this->getDoctrine()->getManager();
 		$user = $em->getRepository("BackendBundle:User")->findOneBy(array("id" => $id));
 		if(count($user) == 1){
-			$dql = "SELECT v FROM BackendBundle:Video v WHERE v.id = $id ORDER BY v.id DESC";
+			$dql = "SELECT v FROM BackendBundle:Video v WHERE v.user = $id ORDER BY v.id DESC";
 			$query = $em->createQuery($dql);
 			$page = $request->query->getInt("page", 1);
 			$paginator = $this->get('knp_paginator');
